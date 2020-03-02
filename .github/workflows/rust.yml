@@ -14,11 +14,11 @@ jobs:
       - name: Install deps
         run: |
           iwr -useb get.scoop.sh | iex
-          echo "##[add-path]C:\Users\runneradmin\scoop\shims"
+          echo "##[add-path]$HOME\scoop\shims"
           echo "##[add-path]C:\ProgramData\scoop\shims"
           scoop install aria2
           scoop install llvm
-          echo "::set-env name=LIBCLANG_PATH::C:\Users\runneradmin\scoop\apps\llvm\current\bin"
+          echo "::set-env name=LIBCLANG_PATH::$HOME\scoop\apps\llvm\current\bin"
 
       - name: Install nightly
         uses: actions-rs/toolchain@v1
