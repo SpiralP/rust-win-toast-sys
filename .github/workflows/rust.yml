@@ -12,10 +12,7 @@ jobs:
           submodules: recursive
 
       - name: Install deps
-        run: |
-          iwr -useb get.scoop.sh | iex
-          scoop install aria2
-          scoop install llvm
+        run: choco install llvm
 
       - name: Install nightly
         uses: actions-rs/toolchain@v1
