@@ -39,19 +39,25 @@ fn it_works() {
       panic!("Error, could not initialize the lib!");
     }
 
+
+    std::thread::spawn(move || {
+      std::thread::sleep(std::time::Duration::from_secs(30));
+      let _ = WAIT.0.send(());
+    });
+
     extern "C" fn activated(action_index: i32) {
       println!("activated {}", action_index);
-      WAIT.0.send(()).unwrap();
+      let _ = WAIT.0.send(());
     }
 
     extern "C" fn dismissed(state: IWinToastHandler_WinToastDismissalReason) {
       println!("dismissed {}", state);
-      WAIT.0.send(()).unwrap();
+      let _ = WAIT.0.send(());
     }
 
     extern "C" fn failed() {
       println!("failed");
-      WAIT.0.send(()).unwrap();
+      let _ = WAIT.0.send(());
     }
 
     let handler = WinToastHandler_new(Some(activated), Some(dismissed), Some(failed));
