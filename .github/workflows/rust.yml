@@ -12,7 +12,12 @@ jobs:
           submodules: recursive
 
       - name: Install deps
-        run: choco install llvm
+        run: |
+          iwr -useb get.scoop.sh | iex
+          echo "##[add-path]C:\Users\runneradmin\scoop\shims"
+          echo "##[add-path]C:\ProgramData\scoop\shims"
+          scoop install aria2
+          scoop install llvm
 
       - name: Install nightly
         uses: actions-rs/toolchain@v1
