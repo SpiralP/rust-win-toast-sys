@@ -1,12 +1,13 @@
 [package]
-name = "rust-win-toast"
+name = "win-toast-sys"
 version = "0.1.0"
 authors = ["SpiralP <spiral.palmer@gmail.com>"]
 edition = "2018"
 
-[dependencies]
-libc = "0.2.67"
-
 [build-dependencies]
 bindgen = "0.53.1"
 cc = "1.0.50"
+
+[dev-dependencies]
+crossbeam-channel = "0.4.2"
+lazy_static = "1.4.0"
