@@ -21,24 +21,26 @@ fn it_works() {
       panic!("Error, your system in not supported!");
     }
 
+    let win_toast = WinToast_instance();
+
     let company_name = wide("Test");
     let product_name = wide("Hello World");
     let blank = wide("");
 
-    WinToast_setAppName(product_name.as_ptr());
+    WinToast_setAppName(win_toast, product_name.as_ptr());
     let aumi = WinToast_configureAUMI(
+      win_toast,
       company_name.as_ptr(),
       product_name.as_ptr(),
       blank.as_ptr(),
       blank.as_ptr(),
     );
-    WinToast_setAppUserModelId(aumi);
+    WinToast_setAppUserModelId(win_toast, aumi);
     WinToast_string_delete(aumi);
 
-    if WinToast_initialize() != WinToast_WinToastError_NoError {
+    if WinToast_initialize(win_toast) != WinToast_WinToastError_NoError {
       panic!("Error, could not initialize the lib!");
     }
-
 
     std::thread::spawn(move || {
       std::thread::sleep(std::time::Duration::from_secs(30));
@@ -70,7 +72,7 @@ fn it_works() {
       WinToastTemplate_TextField_FirstLine,
     );
 
-    let ret = WinToast_showToast(template, handler);
+    let ret = WinToast_showToast(win_toast, template, handler);
 
     if ret.error != WinToast_WinToastError_NoError {
       WinToastTemplate_delete(template);

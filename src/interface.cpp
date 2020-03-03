@@ -24,31 +24,57 @@ extern "C" void WinToast_string_delete(const wchar_t* c_str) {
 
 // ---------------------- WinToast
 
-extern "C" WinToast::WinToastError WinToast_initialize() {
+/// Call `WinToast_delete` when done with the object.
+extern "C" void* WinToast_new() {
+  WinToast* winToast = new WinToast();
+
+  return winToast;
+}
+
+extern "C" void WinToast_delete(void* winToastPtr) {
+  WinToast* winToast = static_cast<WinToast*>(winToastPtr);
+  delete winToast;
+}
+
+extern "C" void* WinToast_instance() {
+  return WinToast::instance();
+}
+
+extern "C" WinToast::WinToastError WinToast_initialize(void* winToastPtr) {
+  WinToast* winToast = static_cast<WinToast*>(winToastPtr);
+
   WinToast::WinToastError error;
-  WinToast::instance()->initialize(&error);
+  winToast->initialize(&error);
   return error;
 }
 
-extern "C" void WinToast_setAppName(const wchar_t* appName) {
-  return WinToast::instance()->setAppName(std::wstring(appName));
+extern "C" void WinToast_setAppName(void* winToastPtr, const wchar_t* appName) {
+  WinToast* winToast = static_cast<WinToast*>(winToastPtr);
+
+  return winToast->setAppName(std::wstring(appName));
 }
 
 /// Call `WinToast_string_delete` when done with the string.
 extern "C" const wchar_t* WinToast_configureAUMI(
+    void* winToastPtr,
     const wchar_t* companyName,
     const wchar_t* productName,
     const wchar_t* subProduct,
     const wchar_t* versionInformation) {
-  wstring str = WinToast::instance()->configureAUMI(
-      wstring(companyName), wstring(productName), wstring(subProduct),
-      wstring(versionInformation));
+  WinToast* winToast = static_cast<WinToast*>(winToastPtr);
+
+  wstring str =
+      winToast->configureAUMI(wstring(companyName), wstring(productName),
+                              wstring(subProduct), wstring(versionInformation));
 
   return clone_string(str);
 }
 
-extern "C" void WinToast_setAppUserModelId(const wchar_t* appUserModelID) {
-  return WinToast::instance()->setAppUserModelId(std::wstring(appUserModelID));
+extern "C" void WinToast_setAppUserModelId(void* winToastPtr,
+                                           const wchar_t* appUserModelID) {
+  WinToast* winToast = static_cast<WinToast*>(winToastPtr);
+
+  return winToast->setAppUserModelId(std::wstring(appUserModelID));
 }
 
 struct WinToast_showToast_return {
@@ -57,14 +83,17 @@ struct WinToast_showToast_return {
 };
 
 extern "C" WinToast_showToast_return WinToast_showToast(
+    void* winToastPtr,
     void* winToastTemplatePtr,
     void* customHandler) {
+  WinToast* winToast = static_cast<WinToast*>(winToastPtr);
+
   WinToastTemplate* winToastTemplate =
       static_cast<WinToastTemplate*>(winToastTemplatePtr);
   IWinToastHandler* handler = static_cast<IWinToastHandler*>(customHandler);
 
   WinToast::WinToastError error;
-  auto id = WinToast::instance()->showToast(*winToastTemplate, handler, &error);
+  auto id = winToast->showToast(*winToastTemplate, handler, &error);
 
   return {id, error};
 }
@@ -77,6 +106,12 @@ extern "C" void* WinToastTemplate_new(
   WinToastTemplate* winToastTemplate = new WinToastTemplate(templateType);
 
   return winToastTemplate;
+}
+
+extern "C" void WinToastTemplate_delete(void* winToastTemplatePtr) {
+  WinToastTemplate* winToastTemplate =
+      static_cast<WinToastTemplate*>(winToastTemplatePtr);
+  delete winToastTemplate;
 }
 
 extern "C" void WinToastTemplate_setTextField(void* winToastTemplatePtr,
@@ -93,12 +128,6 @@ extern "C" void WinToastTemplate_setAttributionText(
   WinToastTemplate* winToastTemplate =
       static_cast<WinToastTemplate*>(winToastTemplatePtr);
   return winToastTemplate->setAttributionText(attributionText);
-}
-
-extern "C" void WinToastTemplate_delete(void* winToastTemplatePtr) {
-  WinToastTemplate* winToastTemplate =
-      static_cast<WinToastTemplate*>(winToastTemplatePtr);
-  delete winToastTemplate;
 }
 
 // ---------------------- WinToastHandler
