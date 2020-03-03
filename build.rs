@@ -6,6 +6,7 @@ fn main() {
 
   cc::Build::new()
     .cpp(true)
+    .define("NDEBUG", None)
     .file("./WinToast/src/wintoastlib.cpp")
     .file("./src/interface.cpp")
     .compile("wintoastlib");
