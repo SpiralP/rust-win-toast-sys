@@ -26,7 +26,7 @@ extern "C" void WinToast_string_delete(const wchar_t* c_str) {
 
 /// Call `WinToast_delete` when done with the object.
 extern "C" void* WinToast_new() {
-  WinToast* winToast = new WinToast();
+  WinToast* winToast = new WinToast;
 
   return winToast;
 }

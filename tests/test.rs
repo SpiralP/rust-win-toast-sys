@@ -38,7 +38,7 @@ fn it_works() {
     WinToast_setAppUserModelId(win_toast, aumi);
     WinToast_string_delete(aumi);
 
-    if WinToast_initialize(win_toast) != WinToast_WinToastError_NoError {
+    if WinToast_initialize(win_toast) != WinToast_WinToastError::NoError {
       panic!("Error, could not initialize the lib!");
     }
 
@@ -48,12 +48,12 @@ fn it_works() {
     });
 
     extern "C" fn activated(action_index: i32) {
-      println!("activated {}", action_index);
+      println!("activated {:?}", action_index);
       let _ = WAIT.0.send(());
     }
 
     extern "C" fn dismissed(state: IWinToastHandler_WinToastDismissalReason) {
-      println!("dismissed {}", state);
+      println!("dismissed {:?}", state);
       let _ = WAIT.0.send(());
     }
 
@@ -63,18 +63,18 @@ fn it_works() {
     }
 
     let handler = WinToastHandler_new(Some(activated), Some(dismissed), Some(failed));
-    let template = WinToastTemplate_new(WinToastTemplate_WinToastTemplateType_Text01);
+    let template = WinToastTemplate_new(WinToastTemplate_WinToastTemplateType::Text01);
 
     let title = wide("TITLE");
     WinToastTemplate_setTextField(
       template,
       title.as_ptr(),
-      WinToastTemplate_TextField_FirstLine,
+      WinToastTemplate_TextField::FirstLine,
     );
 
     let ret = WinToast_showToast(win_toast, template, handler);
 
-    if ret.error != WinToast_WinToastError_NoError {
+    if ret.error != WinToast_WinToastError::NoError {
       WinToastTemplate_delete(template);
       WinToastHandler_delete(handler);
 
