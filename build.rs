@@ -14,6 +14,7 @@ fn main() {
   // the resulting bindings.
   let bindings = bindgen::Builder::default()
     .disable_name_namespacing()
+    .default_enum_style(bindgen::EnumVariation::Rust { non_exhaustive: false })
     // The input header we would like to generate
     // bindings for.
     .header("./src/interface.cpp")
