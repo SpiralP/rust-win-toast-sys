@@ -1,6 +1,7 @@
 use std::{env, path::PathBuf};
 
 fn main() {
+  println!("cargo:rerun-if-changed=./WinToast/src/wintoastlib.cpp");
   println!("cargo:rerun-if-changed=./src/interface.cpp");
 
   cc::Build::new()
