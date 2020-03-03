@@ -1,4 +1,7 @@
 
+
+#include <wchar.h>
+
 #include <string>
 
 #include "../WinToast/src/wintoastlib.h"
@@ -7,9 +10,10 @@ using namespace WinToastLib;
 using namespace std;
 
 inline const wchar_t* clone_string(wstring& str) {
-  size_t length = str.length() + 1;
-  wchar_t* c_str = new wchar_t[length];
-  wcscpy_s(c_str, length, str.c_str());
+  size_t length = str.length();
+
+  wchar_t* c_str = new wchar_t[length + 1];
+  wcscpy(c_str, str.c_str());
 
   return c_str;
 }
