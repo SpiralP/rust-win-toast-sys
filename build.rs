@@ -9,7 +9,7 @@ fn main() {
 
   #[cfg(not(debug_assertions))]
   {
-    builder.define("NDEBUG", None)
+    builder.define("NDEBUG", None);
   }
 
   builder

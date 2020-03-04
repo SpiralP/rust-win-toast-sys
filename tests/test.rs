@@ -89,7 +89,6 @@ fn it_works() {
       WinToastTemplate_TextField::FirstLine,
     );
 
-
     WinToastTemplate_setActivationType(template, WinToastTemplate_ActivationType::Protocol);
 
     let launch = wide("ms-settings:windowsupdate");
@@ -107,8 +106,6 @@ fn it_works() {
     }
 
     wait();
-
-    std::thread::sleep_ms(10000);
 
     WinToastTemplate_delete(template);
     WinToastHandler_delete(handler);
