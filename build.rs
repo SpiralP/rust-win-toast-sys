@@ -4,9 +4,15 @@ fn main() {
   println!("cargo:rerun-if-changed=./WinToast/src/wintoastlib.cpp");
   println!("cargo:rerun-if-changed=./src/interface.cpp");
 
-  cc::Build::new()
-    .cpp(true)
-    .define("NDEBUG", None)
+  let mut builder = cc::Build::new();
+  builder.cpp(true);
+
+  #[cfg(not(debug_assertions))]
+  {
+    builder.define("NDEBUG", None)
+  }
+
+  builder
     .file("./WinToast/src/wintoastlib.cpp")
     .file("./src/interface.cpp")
     .compile("wintoastlib");
@@ -16,7 +22,9 @@ fn main() {
   // the resulting bindings.
   let bindings = bindgen::Builder::default()
     .disable_name_namespacing()
-    .default_enum_style(bindgen::EnumVariation::Rust { non_exhaustive: false })
+    .default_enum_style(bindgen::EnumVariation::Rust {
+      non_exhaustive: false,
+    })
     // The input header we would like to generate
     // bindings for.
     .header("./src/interface.cpp")
@@ -34,7 +42,6 @@ fn main() {
     .whitelist_type("WinToastLib::WinToastTemplate_TextField")
     .whitelist_type("WinToastLib::WinToastTemplate_WinToastTemplateType")
     .whitelist_type("WinToastLib::WinToastTemplate_AudioSystemFile")
-
     // Finish the builder and generate the bindings.
     .generate()
     // Unwrap the Result and panic on failure.

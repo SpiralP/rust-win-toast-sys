@@ -114,9 +114,31 @@ extern "C" void WinToastTemplate_delete(void* winToastTemplatePtr) {
   delete winToastTemplate;
 }
 
-extern "C" void WinToastTemplate_setTextField(void* winToastTemplatePtr,
-                                              const wchar_t* txt,
-                                              WinToastTemplate::TextField pos) {
+extern "C" void WinToastTemplate_setFirstLine(void* winToastTemplatePtr,
+                                              const wchar_t* text) {
+  WinToastTemplate* winToastTemplate =
+      static_cast<WinToastTemplate*>(winToastTemplatePtr);
+  return winToastTemplate->setFirstLine(text);
+}
+
+extern "C" void WinToastTemplate_setSecondLine(void* winToastTemplatePtr,
+                                               const wchar_t* text) {
+  WinToastTemplate* winToastTemplate =
+      static_cast<WinToastTemplate*>(winToastTemplatePtr);
+  return winToastTemplate->setSecondLine(text);
+}
+
+extern "C" void WinToastTemplate_setThirdLine(void* winToastTemplatePtr,
+                                              const wchar_t* text) {
+  WinToastTemplate* winToastTemplate =
+      static_cast<WinToastTemplate*>(winToastTemplatePtr);
+  return winToastTemplate->setThirdLine(text);
+}
+
+extern "C" void WinToastTemplate_setTextField(
+    void* winToastTemplatePtr,
+    const wchar_t* txt,
+    _In_ WinToastTemplate::TextField pos) {
   WinToastTemplate* winToastTemplate =
       static_cast<WinToastTemplate*>(winToastTemplatePtr);
   return winToastTemplate->setTextField(txt, pos);
@@ -128,6 +150,73 @@ extern "C" void WinToastTemplate_setAttributionText(
   WinToastTemplate* winToastTemplate =
       static_cast<WinToastTemplate*>(winToastTemplatePtr);
   return winToastTemplate->setAttributionText(attributionText);
+}
+
+extern "C" void WinToastTemplate_setImagePath(void* winToastTemplatePtr,
+                                              const wchar_t* imgPath) {
+  WinToastTemplate* winToastTemplate =
+      static_cast<WinToastTemplate*>(winToastTemplatePtr);
+  return winToastTemplate->setImagePath(imgPath);
+}
+
+extern "C" void WinToastTemplate_setAudioPath(
+    void* winToastTemplatePtr,
+    _In_ WinToastTemplate::AudioSystemFile audio) {
+  WinToastTemplate* winToastTemplate =
+      static_cast<WinToastTemplate*>(winToastTemplatePtr);
+  return winToastTemplate->setAudioPath(audio);
+}
+
+extern "C" void WinToastTemplate_setAudioPath2(void* winToastTemplatePtr,
+                                               const wchar_t* audioPath) {
+  WinToastTemplate* winToastTemplate =
+      static_cast<WinToastTemplate*>(winToastTemplatePtr);
+  return winToastTemplate->setAudioPath(audioPath);
+}
+
+extern "C" void WinToastTemplate_setAudioOption(
+    void* winToastTemplatePtr,
+    _In_ WinToastTemplate::AudioOption audioOption) {
+  WinToastTemplate* winToastTemplate =
+      static_cast<WinToastTemplate*>(winToastTemplatePtr);
+  return winToastTemplate->setAudioOption(audioOption);
+}
+
+extern "C" void WinToastTemplate_setDuration(
+    void* winToastTemplatePtr,
+    WinToastTemplate::Duration duration) {
+  WinToastTemplate* winToastTemplate =
+      static_cast<WinToastTemplate*>(winToastTemplatePtr);
+  return winToastTemplate->setDuration(duration);
+}
+
+extern "C" void WinToastTemplate_setExpiration(void* winToastTemplatePtr,
+                                               _In_ INT64 millisecondsFromNow) {
+  WinToastTemplate* winToastTemplate =
+      static_cast<WinToastTemplate*>(winToastTemplatePtr);
+  return winToastTemplate->setExpiration(millisecondsFromNow);
+}
+
+extern "C" void WinToastTemplate_addAction(void* winToastTemplatePtr,
+                                           const wchar_t* label) {
+  WinToastTemplate* winToastTemplate =
+      static_cast<WinToastTemplate*>(winToastTemplatePtr);
+  return winToastTemplate->addAction(label);
+}
+
+extern "C" void WinToastTemplate_setLaunch(void* winToastTemplatePtr,
+                                           const wchar_t* launch) {
+  WinToastTemplate* winToastTemplate =
+      static_cast<WinToastTemplate*>(winToastTemplatePtr);
+  return winToastTemplate->setLaunch(launch);
+}
+
+extern "C" void WinToastTemplate_setActivationType(
+    void* winToastTemplatePtr,
+    WinToastTemplate_ActivationType activationType) {
+  WinToastTemplate* winToastTemplate =
+      static_cast<WinToastTemplate*>(winToastTemplatePtr);
+  return winToastTemplate->setActivationType(activationType);
 }
 
 // ---------------------- WinToastHandler

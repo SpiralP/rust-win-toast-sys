@@ -10,10 +10,29 @@ fn is_compatible() {
 /// https://github.com/mohabouje/WinToast#example-of-usage
 #[test]
 fn it_works() {
-  use crossbeam_channel::{bounded, Receiver, Sender};
   use lazy_static::lazy_static;
+  use std::{
+    sync::{Condvar, Mutex},
+    time::Duration,
+  };
+
   lazy_static! {
-    static ref WAIT: (Sender<()>, Receiver<()>) = bounded(1);
+    static ref PAIR: (Mutex<()>, Condvar) = (Mutex::new(()), Condvar::new());
+  }
+
+  fn wake() {
+    let (lock, cvar) = &*PAIR;
+    let _guard = lock.lock().unwrap();
+    cvar.notify_all();
+  }
+
+  fn wait() {
+    let (lock, cvar) = &*PAIR;
+    let guard = lock.lock().unwrap();
+    cvar.notify_all();
+
+    // 30 seconds probably long enough for only buggy toasts
+    let _guard = cvar.wait_timeout(guard, Duration::from_secs(30)).unwrap();
   }
 
   unsafe {
@@ -42,24 +61,22 @@ fn it_works() {
       panic!("Error, could not initialize the lib!");
     }
 
-    std::thread::spawn(move || {
-      std::thread::sleep(std::time::Duration::from_secs(30));
-      let _ = WAIT.0.send(());
-    });
-
     extern "C" fn activated(action_index: i32) {
       println!("activated {:?}", action_index);
-      let _ = WAIT.0.send(());
+
+      wake();
     }
 
     extern "C" fn dismissed(state: IWinToastHandler_WinToastDismissalReason) {
       println!("dismissed {:?}", state);
-      let _ = WAIT.0.send(());
+
+      wake();
     }
 
     extern "C" fn failed() {
       println!("failed");
-      let _ = WAIT.0.send(());
+
+      wake();
     }
 
     let handler = WinToastHandler_new(Some(activated), Some(dismissed), Some(failed));
@@ -72,6 +89,12 @@ fn it_works() {
       WinToastTemplate_TextField::FirstLine,
     );
 
+
+    WinToastTemplate_setActivationType(template, WinToastTemplate_ActivationType::Protocol);
+
+    let launch = wide("ms-settings:windowsupdate");
+    WinToastTemplate_setLaunch(template, launch.as_ptr());
+
     let ret = WinToast_showToast(win_toast, template, handler);
 
     if ret.error != WinToast_WinToastError::NoError {
@@ -83,7 +106,9 @@ fn it_works() {
       println!("Showing notification with id {}", ret.id);
     }
 
-    WAIT.1.recv().unwrap();
+    wait();
+
+    std::thread::sleep_ms(10000);
 
     WinToastTemplate_delete(template);
     WinToastHandler_delete(handler);
