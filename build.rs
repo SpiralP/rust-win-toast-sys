@@ -1,23 +1,38 @@
 use std::{env, path::PathBuf};
 
 fn main() {
-    println!("cargo:rerun-if-changed=./WinToast/src/wintoastlib.cpp");
-    println!("cargo:rerun-if-changed=./src/interface.cpp");
+    println!("cmake");
 
-    let mut builder = cc::Build::new();
-    builder.cpp(true);
+    println!("cargo:rerun-if-changed=./WinToast/src/wintoastlib.cpp");
+    let win_toast_library_path = cmake::Config::new("WinToast")
+        .no_build_target(true)
+        .profile("Release")
+        .define("WINTOASTLIB_BUILD_EXAMPLES", "OFF")
+        .build();
+
+    println!(
+        "cargo:rustc-link-search=native={}",
+        win_toast_library_path
+            .join("build")
+            .join("Release")
+            .display()
+    );
+    println!("cargo:rustc-link-lib=static=WinToast");
+
+    println!("cc");
+    let mut cc_builder = cc::Build::new();
 
     #[cfg(not(debug_assertions))]
     {
-        builder.define("NDEBUG", None);
+        cc_builder.define("NDEBUG", None);
     }
-
-    builder
-        .file("./WinToast/src/wintoastlib.cpp")
+    cc_builder
+        .cpp(true)
         .file("./src/interface.cpp")
         .include("./WinToast/include")
-        .compile("wintoastlib");
+        .compile("interface");
 
+    println!("bindgen");
     let bindings = bindgen::Builder::default()
         .disable_name_namespacing()
         .default_enum_style(bindgen::EnumVariation::Rust {

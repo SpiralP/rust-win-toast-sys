@@ -13,7 +13,7 @@ inline const wchar_t* clone_string(wstring& str) {
   size_t length = str.length();
 
   wchar_t* c_str = new wchar_t[length + 1];
-  wcscpy(c_str, str.c_str());
+  wcscpy_s(c_str, length + 1, str.c_str());
 
   return c_str;
 }
