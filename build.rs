@@ -15,6 +15,7 @@ fn main() {
     builder
         .file("./WinToast/src/wintoastlib.cpp")
         .file("./src/interface.cpp")
+        .include("./WinToast/include")
         .compile("wintoastlib");
 
     let bindings = bindgen::Builder::default()
@@ -23,7 +24,8 @@ fn main() {
             non_exhaustive: false,
         })
         .header("./src/interface.cpp")
-        .parse_callbacks(Box::new(bindgen::CargoCallbacks))
+        .clang_arg("-I./WinToast/include")
+        .parse_callbacks(Box::new(bindgen::CargoCallbacks::new()))
         .allowlist_function("WinToast_.*")
         .allowlist_function("WinToastTemplate_.*")
         .allowlist_function("WinToastHandler.*")

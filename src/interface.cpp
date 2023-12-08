@@ -4,7 +4,7 @@
 
 #include <string>
 
-#include "../WinToast/src/wintoastlib.h"
+#include "wintoastlib.h"
 
 using namespace WinToastLib;
 using namespace std;
